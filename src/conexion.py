@@ -6,6 +6,3 @@ def obtenerConexion():
     host        = 'localhost',
     database    = 'proyecto - libros'
 )
-
-
-
