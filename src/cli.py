@@ -8,13 +8,12 @@ def menu():
 
         print("\n===== PROYECT-BOOKS DATABASE =====")
         print("1 - Top 5 mejores libros")
-        print("2 - Libros leídos por año")
-        print("3 - Autor más leído")
-        print("4 - Género favorito")
-        print("5 - Libro leído más largo")
-        print("6 - Buscar libro")
-        print("7 - Agregar libro")
-        print("8 - Salir")
+        print("2 - Buscar libro")
+        print("3 - Estadísticas")
+        print("4 - Registrar libro")
+        print("5 - Registrar lectura")
+        print("6 - Registrar autor")
+        print("n - Salir")
        
         opcion = input("Seleccione opcion: ")
 
@@ -22,22 +21,13 @@ def menu():
             top_libros()
 
         elif opcion == "2":
-            libros_por_anio()
+           titulo = input("Ingrese el titulo del libro: ")
+           buscar_libro(titulo) 
 
         elif opcion == "3":
-            autor_mas_leido()
-        
+            estadisticas()
+
         elif opcion == "4":
-            genero_favorito()
-
-        elif opcion == "5":
-            libro_mas_largo()
-
-        elif opcion == "6":
-            titulo = input("Ingrese el titulo del libro:")
-            buscar_libro(titulo) 
-
-        elif opcion == "7":
             id_libro = input("Id del libro: ")
             titulo   = input("Titulo del libro: ")
             genero   = input("Género del libro: ")
@@ -45,25 +35,18 @@ def menu():
             paginas  = input("Páginas del libro: ")
             agregar_libro(id_libro, titulo, genero, id_autor, paginas)
 
+        elif opcion =="5":
+            id_libro     = input("Id del libro: ")
+            fecha_inicio = input("Fecha de inicio (YYYY-MM-DD): ")
+            fecha_fin    = input("fecha de fin (YYYY-MM-DD): ")
+            puntuacion   = input("Puntuacion del libro [1-5]: ")
+            comentario   = input("Comentario del libro: ")
 
-        elif opcion == "8":
+            registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
+            
+            
+        elif opcion == "6":
             break 
 
         else: 
             print("Opcion inválida")
-
-""" 
-opciones de consultas para hacer:
--> buscar libro (terminar y mejorar)
--> estadisticas de lectura tambien con promedio de puntuaciones promedio de lectura
--> registar autor o lectura 
-""" 
-
-# TERMINADOS Y PROBADOS
-# top 5 mejores libros 
-# libros leidos por año (cantidad)
-# autor mas leido 
-# genero favorito 
-# libro mas largo leido 
-# agregar libro 
-# salir

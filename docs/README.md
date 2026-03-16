@@ -10,5 +10,52 @@ to store books, authors, reading dates, and ratings.
 - Python
 - MySQL
 - SQL
-  
 
+## Features
+
+- Store books, authors and reading data
+- Rate books and add comments
+- Analyze reading habits
+- View statistics about reading history
+
+## Example Statistics
+
+The program can calculate:
+
+- Top rated books
+- Books read per year
+- Most read author
+- Average rating
+
+## Project Structure
+
+book-reading-tracker
+
+src/ → Python source code  
+db/ → Database schema and SQL queries  
+docs/ → Documentation
+
+## Example CLI
+
+===== BOOK TRACKER =====
+
+1 - Top books  
+2 - Search book  
+3 - Reading statistics  
+4 - record book
+5 - record reading
+6 - record reading
+
+## Setup
+
+Install dependencies
+
+pip install -r requirements.txt
+
+Create the database
+
+Run schema.sql in MySQL
+
+Run the program
+
+python src/main.py
