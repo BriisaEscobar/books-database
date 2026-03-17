@@ -1,0 +1,12 @@
+## Setup
+Install dependencies
+
+pip install -r requirements.txt
+
+Create the database
+
+Run schema.sql in MySQL
+
+Run the program
+
+python src/main.py

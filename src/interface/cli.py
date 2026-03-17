@@ -1,7 +1,5 @@
-# agregar mas opciones 
-# interfaz 
-from consultas import * 
-from agregar_datos import * 
+import database 
+import services
 
 def menu():
     while True:
@@ -12,28 +10,29 @@ def menu():
         print("3 - Estadísticas")
         print("4 - Registrar libro")
         print("5 - Registrar lectura")
-        print("6 - Registrar autor")
+        # print("6 - Registrar autor")
         print("n - Salir")
        
         opcion = input("Seleccione opcion: ")
 
         if opcion == "1":
-            top_libros()
+            services.top_libros()
 
         elif opcion == "2":
            titulo = input("Ingrese el titulo del libro: ")
-           buscar_libro(titulo) 
+           services.buscar_libro(titulo) 
 
         elif opcion == "3":
-            estadisticas()
+            services.estadisticas()
 
+        # corregir esto ahora va agregar libro con autor 
         elif opcion == "4":
             id_libro = input("Id del libro: ")
             titulo   = input("Titulo del libro: ")
             genero   = input("Género del libro: ")
             id_autor = input("Id autor: ")
             paginas  = input("Páginas del libro: ")
-            agregar_libro(id_libro, titulo, genero, id_autor, paginas)
+            services.agregar_libro(id_libro, titulo, genero, id_autor, paginas)
 
         elif opcion =="5":
             id_libro     = input("Id del libro: ")
@@ -42,7 +41,7 @@ def menu():
             puntuacion   = input("Puntuacion del libro [1-5]: ")
             comentario   = input("Comentario del libro: ")
 
-            registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
+            services.registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
             
             
         elif opcion == "6":

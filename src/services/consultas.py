@@ -1,4 +1,5 @@
-from conexion import * 
+from database import obtenerConexion 
+
 def top_libros():
     conexion = obtenerConexion()
     cursor = conexion.cursor()
@@ -166,4 +167,5 @@ def registrar_Autor(id_autor, nombre):
         """), (id_autor, nombre)
     conexion.commit()
     print("Autor regist4rado correctamente :)")
+    
     

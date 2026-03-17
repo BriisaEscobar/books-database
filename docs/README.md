@@ -44,18 +44,5 @@ docs/ → Documentation
 3 - Reading statistics  
 4 - record book
 5 - record reading
-6 - record reading
+6 - record author
 
-## Setup
-
-Install dependencies
-
-pip install -r requirements.txt
-
-Create the database
-
-Run schema.sql in MySQL
-
-Run the program
-
-python src/main.py

@@ -1,3 +1,3 @@
-from cli import menu 
+from interface import menu 
 menu()
 
