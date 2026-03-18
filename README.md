@@ -27,6 +27,7 @@ El programa puede calcular:
 - Calificación promedio
 
 ## 🗂 Estructura del proyecto
+```
 books-database
 │
 ├── src
@@ -51,6 +52,7 @@ books-database
 ├── requirements.txt
 ├── .gitignore
 └── README.md
+```
 
 ## ▶ Cómo ejecutar el proyecto
 
