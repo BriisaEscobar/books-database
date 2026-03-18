@@ -1,3 +1,3 @@
-from interface import menu 
+from interface.cli import menu
 menu()
 

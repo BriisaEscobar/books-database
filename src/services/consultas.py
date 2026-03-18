@@ -1,4 +1,5 @@
-from database import obtenerConexion 
+from database.conexion import obtenerConexion 
+from datetime import datetime
 
 def top_libros():
     conexion = obtenerConexion()
@@ -11,9 +12,14 @@ def top_libros():
         ORDER BY puntuacion DESC
         LIMIT 5
     """)
-    
+
+    print("TOP 5 mejores libros")
+
     for titulo, puntuacion in cursor:
-        print(titulo, "-", puntuacion)
+        print("->", titulo, "-", puntuacion)
+    
+    cursor.close()
+    conexion.close()
 
 # ----------------------------------------------
 
@@ -36,6 +42,9 @@ def buscar_libro(unLibro):
     if not resultado: 
         print("No se encontró el libro con ese título")
 
+    cursor.close()
+    conexion.close()
+
 # ----------------------------------------------
 
 def agregar_libro(id_libro, titulo, genero, id_autor, paginas):
@@ -51,6 +60,9 @@ def agregar_libro(id_libro, titulo, genero, id_autor, paginas):
     conexion.commit()
 
     print("Libro agregado correctamente :)")
+
+    cursor.close()
+    conexion.close()
 
 # ----------------------------------------------
 
@@ -70,7 +82,7 @@ def estadisticas():
             SELECT titulo,  paginas
             FROM lecturas
             JOIN libros USING (id_libro)
-            GROUP BY paginas
+            GROUP BY titulo, paginas
             ORDER BY paginas DESC
             LIMIT 1;        
     """)
@@ -93,7 +105,7 @@ def estadisticas():
     mejor = cursor.fetchone()
     if mejor:
         print("Libro mejor puntuado:", mejor[0])
-        
+    
     cursor.execute("""
         SELECT titulo
         FROM libros
@@ -104,7 +116,6 @@ def estadisticas():
     peor = cursor.fetchone()
     if peor:
         print("Libro peor puntuado:", peor[0], "\n")
-    
     
     cursor.execute( """ 
                    SELECT autor.nombre, COUNT(*) AS Cantidad 
@@ -117,7 +128,7 @@ def estadisticas():
     """)
     resultado = cursor.fetchone()
     print("Autor mas leido:", resultado)
-   
+
     cursor.execute(""" 
                     SELECT libros.genero, COUNT(*) AS Cantidad
                     FROM libros
@@ -139,6 +150,9 @@ def estadisticas():
     for anio, cantidad in cursor:
         print("Libro leidos en: ", anio, ":", cantidad)
 
+    cursor.close()
+    conexion.close()
+
     print ("-----------------------------------------")
     
 # ----------------------------------------------
@@ -147,6 +161,17 @@ def registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
     conexion = obtenerConexion()
     cursor = conexion.cursor()
 
+    if not validar_fechas(fecha_inicio, fecha_fin): 
+        return 
+    
+    if not validar_puntuacion(puntuacion):
+        print("Puntuacion inválida [1-5]")
+        return 
+
+    if not validar_comentario(comentario):
+        print("Comentario inválido")
+        return 
+    
     cursor.execute("""
             INSERT INTO lecturas (id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
             VALUES (%s, %s, %s, %s, %s)
@@ -154,6 +179,9 @@ def registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
     conexion.commit()
 
     print("Lectura registrada correctamente :)")
+
+    cursor.close()
+    conexion.close()
 
 # ----------------------------------------------
   
@@ -166,6 +194,40 @@ def registrar_Autor(id_autor, nombre):
             VALUES (%s, %s)
         """), (id_autor, nombre)
     conexion.commit()
-    print("Autor regist4rado correctamente :)")
+    print("Autor registrado correctamente :)")
+
+    cursor.close()
+    conexion.close()
+
+# ---------------------------------------------- 
+
+def validar_fechas(fecha_inicio, fecha_fin):
+    try: 
+        inicio = datetime.strptime(fecha_inicio,"%Y-%m-%d")
+        fin= datetime.strptime(fecha_fin, "%Y-%m-%d")
+
+        if fin < inicio: 
+            print("La fecha de fin no puede ser anterior a la de de inicio")
+            return False
+        return True
     
-    
+    except ValueError: 
+        print("Formato de fecha inválido (YYYY-MM-DD)")
+        return False 
+
+# ---------------------------------------------- 
+
+def validar_puntuacion(puntuacion): 
+    try: 
+        puntuacion = int(puntuacion)
+        return 1 <= puntuacion <= 5 
+    except: 
+        return False 
+
+# ---------------------------------------------- 
+
+def validar_comentario(comentario): 
+    validos = ["Excelente", "Muy bueno", "Bueno", "Regular" "Malo"]
+    return comentario in validos
+ 
+# ----------------------------------------------   

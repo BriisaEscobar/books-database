@@ -1,4 +1,4 @@
-from database import obtenerConexion
+from database.conexion import obtenerConexion
 
 def registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario): 
     conexion = obtenerConexion()

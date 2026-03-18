@@ -15,6 +15,7 @@ El objetivo del proyecto es practicar el diseño de bases de datos relacionales,
 * Python (aplicación principal y lógica del sistema)
 * MySQL (gestión de base de datos)
 * SQL (consultas y manipulación de datos)
+* Git & GitHub 
 
 ---
 
@@ -27,22 +28,27 @@ books-database
 │
 ├── src
 │   ├── main.py
-│   ├── conexion.py
-│   ├── cli.py
-│   ├── consultas.py
-│   └── agregar_datos.py
+│   ├── database
+│   │   └── conexion.py
+│   ├── services
+│   │   ├── consultas.py
+│   │   └── agregar_datos.py
+│   └── interface
+│       └── cli.py
 │
 ├── db
 │   ├── schema.sql
+│   ├── seed.sql
 │   └── queries.sql
 │
 ├── docs
-│   └── proyecto.md
-│   └── README.md
-│   └── requirements.txt
+│   ├── proyecto.md
+│   └── database_diagram.png
+│
+├── requirements.txt
+├── .gitignore
+└── README.md
     
-
-
 ```
 
 Cada módulo cumple una función específica dentro del sistema.
@@ -180,10 +186,10 @@ El sistema permite realizar las siguientes operaciones:
 
 El proyecto puede expandirse con nuevas funcionalidades como:
 
-* recomendaciones de lectura
-* seguimiento de libros pendientes por leer
-* análisis de hábitos de lectura por año
-* visualización de estadísticas más avanzadas
+* Recomendaciones de lectura
+* Seguimiento de libros pendientes por leer
+* Análisis de hábitos de lectura por año
+* Visualización de estadísticas más avanzadas
 
 ---
 
@@ -191,9 +197,9 @@ El proyecto puede expandirse con nuevas funcionalidades como:
 
 Este proyecto fue desarrollado con el objetivo de practicar:
 
-* diseño de bases de datos relacionales
-* consultas SQL complejas
-* integración entre Python y MySQL
-* organización de proyectos de software
+* Diseño de bases de datos relacionales
+* Consultas SQL complejas
+* Integración entre Python y MySQL
+* Organización de proyectos de software
 
 También sirve como proyecto de portfolio para demostrar conocimientos en bases de datos y desarrollo backend.
