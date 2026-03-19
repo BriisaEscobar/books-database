@@ -225,9 +225,169 @@ def validar_puntuacion(puntuacion):
         return False 
 
 # ---------------------------------------------- 
-
+""" 
 def validar_comentario(comentario): 
     validos = ["Excelente", "Muy bueno", "Bueno", "Regular" "Malo"]
     return comentario in validos
- 
+"""
 # ----------------------------------------------   
+
+def validar_estado(estado): 
+    validos = ["Pendiente", "Leyendo", "Terminado", "Abandonado"]
+    return estado in validos 
+
+# ----------------------------------------------   
+
+def terminar_lectura(id_lectura, puntuacion, comentario):
+    conexion = obtenerConexion()
+    cursor = conexion.cursor()
+
+    try:
+        cursor.execute("""
+            SELECT fecha_inicio, estado
+            FROM lecturas
+            WHERE id_lectura = %s
+        """, (id_lectura,))
+
+        resultado = cursor.fetchone()
+
+        if not resultado:
+            print(f"No existe la lectura {id_lectura}")
+            return
+
+        fecha_inicio, estado_actual = resultado
+
+        if estado_actual != "leyendo":
+            print(f"No se puede terminar una lectura en estado {estado_actual}")
+            return
+
+        if not fecha_inicio:
+            print("No tiene fecha de inicio")
+            return
+        
+        if not (1 <= puntuacion <= 5):
+            print("Puntuación inválida")
+            return
+
+        fecha_fin = datetime.now().date()
+
+        if fecha_fin < fecha_inicio:
+            print("Fechas incoherentes")
+            return
+
+        cursor.execute("""
+            UPDATE lecturas
+            SET estado          = %s,
+                puntuacion      = %s,
+                comentario      = %s,
+                fecha_fin       = %s
+            WHERE id_lectura    = %s
+        """, ("terminado", puntuacion, comentario, fecha_fin, id_lectura))
+
+        conexion.commit()
+
+        print(f"Lectura finalizada correctamente el {fecha_fin}")
+
+        if estado_actual == "Terminado": 
+            resultado = input("Desea cambiar el comentario (y/n): ")
+
+            if resultado == 'y':
+                editar_comentario(id_lectura, nuevo_comentario)
+                nuevo_comentario = input("Ingrese el nuevo comenatrio: ")
+                agregar_historial_comentarios(nuevo_comentario, id_lectura)
+                return 
+
+            else:
+                return print ("lectura terminada con comentario original")
+                #tendria que hacre un validar respuesta y/n
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+# ----------------------------------------------   
+
+def editar_comentario(id_lectura, nuevo_comentario): 
+    conexion = obtenerConexion 
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+            SELECT id_lectura, comentario
+            FROM lecturas
+            WHERE id_lectura = %s; 
+        """, (id_lectura,))
+    
+    resultado = cursor.fetchone()
+
+    if not resultado:
+        print(f"No existe la lectura {id_lectura}")
+        return
+
+    cursor.execute(""" 
+            UPDATE lecturas 
+            SET comentario = %s
+            WHERE id_lectura       
+    """), (id_lectura, nuevo_comentario)
+    
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+# ----------------------------------------------   
+def agregar_historial_comentarios(nuevo_comentario, id_lectura) :
+    conexion = obtenerConexion()
+    cursor = conexion.conexion()
+
+    cursor.execute("""
+            SELECT COUNT (*) 
+            FROM historial_comentarios 
+            WHERE id_lectura = %s
+        """, (id_lectura,))
+
+    total_cambios = cursor.fetchone()
+
+    if total_cambios >=5: 
+        print ("Has excedido el limite de cambios en el historial de comentarios ")
+        return 
+
+    cursor.execute("""
+            UPDATE lecturas 
+            SET comentario   = %s
+            WHERE id_lectura = %s,                  
+    """, (id_lectura,))
+
+    resultado = cursor.fetchone()
+    comentario_anterior = resultado[0] if resultado else None
+
+    if comentario_anterior != nuevo_comentario: 
+        cursor.execute("""
+                UPDATE lecturas 
+                SET comentario   = %s
+                WHERE id_lectura = %s
+        """, (nuevo_comentario, id_lectura))
+    
+    cursor.execute(""" 
+            INSERT INTO historial_comentarios 
+            (id_lectura, comentario_anterior, comentario_nuevo)
+            LIMIT 5;
+    """), (id_lectura, comentario_anterior, nuevo_comentario)
+ 
+    conexion.commit()
+    print("Comentario actualizado e historial guardado")
+
+        
+
+
+    
+
+
+
+
+
+    
+
+
+
+  
+
