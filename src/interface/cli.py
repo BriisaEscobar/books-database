@@ -11,6 +11,8 @@ def menu():
         print("4 - Registrar libro")
         print("5 - Registrar lectura")
         print("6 - Registrar autor")
+        print("7 - Terminar lectura")
+        print("8 - Editar comentario")
         print("n - Salir")
        
         opcion = input("Seleccione opcion: ") #print("\n") QUIERO UN SALTO DE LINEA 
@@ -44,8 +46,18 @@ def menu():
             agregar.registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
             
             
-        elif opcion == "6":
+        # reviusar opcion 6 
+
+        elif opcion == "7": 
+            id_libro = input("Id del libro: ")
+            
+
+
+        elif opcion == "n":
             break 
 
         else: 
             print("Opcion inválida")
+
+
+# hacer un terminar lectura y editar comentario 
