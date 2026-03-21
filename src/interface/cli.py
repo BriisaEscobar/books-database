@@ -10,9 +10,8 @@ def menu():
         print("3 - Estadísticas")
         print("4 - Registrar libro")
         print("5 - Registrar lectura")
-        print("6 - Registrar autor")
-        print("7 - Terminar lectura")
-        print("8 - Editar comentario")
+        print("6 - Terminar lectura")
+        print("7 - Editar comentario")
         print("n - Salir")
        
         opcion = input("Seleccione opcion: ") 
@@ -46,13 +45,13 @@ def menu():
                 print("Error:", resultado["error"])
 
         # ESTADISICAS
-        elif opcion == "3": 
+        elif opcion == "3":
             resultado = consultas.estadisticas()
 
             if resultado["success"]: 
                 data = resultado["data"]
             
-                print("\n===== ESTADISTICAS DE LECTURA =====")
+                print("\n 📚 ===== ESTADISTICAS DE LECTURA ===== 📚 ")
                 print("Total de libros leidos: ", data["total_leidos"])
 
                 if data["libro_mas_largo"]:
@@ -80,45 +79,115 @@ def menu():
             else: 
                 print("Error:",resultado["error"])           
 
-
-        # corregir esto ahora va agregar libro con autor!!
+            
+        # REGISTAR LIBRO CON AUTOR
         elif opcion == "4":
-            id_libro = input("Id del libro: ")
+    
             titulo   = input("Titulo del libro: ")
             genero   = input("Género del libro: ")
-            id_autor = input("Id autor: ")
-            paginas  = input("Páginas del libro: ")
-            agregar.agregar_libro(id_libro, titulo, genero, id_autor, paginas)
+            paginas  = int(input("Páginas del libro: "))
+            autor    = input("Autor del libro: ")
 
+            resultado = agregar.agregar_libro_con_autor(titulo, genero, paginas,autor)
+
+            if resultado["success"]: 
+                data = resultado["data"]
+                
+                print("\n 📚 ===== LIBRO REGISTRADO ===== 📚 ")
+                print("Titulo:", data["titulo"])
+                print("Autor:", data["autor"])
+                print("Género:", data["genero"])
+                print("Páginas:", data["paginas"])
+    
+
+
+            else: 
+                print("Error:", resultado["error"])
+
+        # REGISTRAR LECTURA 
         elif opcion =="5":
-            id_libro     = input("Id del libro: ")
+            id_libro = input ("ID del libro: ")
             fecha_inicio = input("Fecha de inicio (YYYY-MM-DD): ")
-            fecha_fin    = input("fecha de fin (YYYY-MM-DD): ")
-            puntuacion   = input("Puntuacion del libro [1-5]: ")
-            comentario   = input("Comentario del libro (Exelente, Muy bueno, Bueno, Regular, Malo): ")
+            fecha_fin = input("Fecha de fin (YYYY-MM-DD): ")
+            puntuacion = int(input("Puntuación: "))
+            comentario = input("Comentario: ")            
 
-            agregar.registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
-            
-        # reviusar opcion 6 
+            resultado = agregar.registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
 
-        elif opcion == "7": 
+            if resultado["success"]: 
+                data = resultado["data"]
+
+                print("\n 📚 ===== LECTURA REGISTRADA ===== 📚")
+
+                if data["id_libro"]: {
+                    print("Id del libro:", data["id_libro"])
+                }
+                    
+                if data["fecha_inicio"]: 
+                    print("Fecha de inicio: ", data["fecha_inicio"])
+
+                if data["fecha_fin"]: 
+                    print("Fecha de fin: ", data["fecha_fin"])
+
+                if data["puntuacion"]: 
+                    print("Puntuacion: ", data["puntuacion"])
+                
+                if data["comentario"]: 
+                    print("Comentario: " ,data["comentario"])
+         
+            else: 
+                print("Error:", resultado["error"])
+
+        # TERMINAR LECTURA
+        elif opcion == "6": 
             id_lectura = input("Ingrese el Id de la lectura: ")
             puntuacion = int(input("Ingrese una puntuacion al libro: "))
             comentario = input("Ingrese un comentario sobre el libro: ")
             
             consultas.terminar_lectura(id_lectura, puntuacion, comentario)
 
-        elif opcion == "8":
+            if resultado["success"]: 
+                data = resultado["data"]
+
+                print("\n 📚 ===== LECTURA REGISTRADA ===== 📚")
+
+                if data["id_lectura"]: {
+                    print("Id lectura:", data["id_lectura"])
+                }
+
+                if data["puntuacion"]: 
+                    print("Puntuacion: ", data["puntuacion"])
+                
+                if data["comentario"]: 
+                    print("Comentario: " ,data["comentario"])
+         
+            else: 
+                print("Error:", resultado["error"])
+
+        # EDITAR COMENTARIO 
+        elif opcion == "7":
             id_lectura = input("Ingrese el Id de la lectura: ")
             nuevo_comentario = input("Ingrese el nuevo comentario: ")
 
-            consultas.editar_comentario(id_lectura, nuevo_comentario)
+            resultado = consultas.editar_comentario(id_lectura, nuevo_comentario)
 
+            if resultado["success"]: 
+                data = resultado["data"]
 
+                if ["id_lectura"]: 
+                    print(["id_lectura"], data["id_lectura"])
+                
+                if ["comentario_anterior"]:
+                    print(["comentario_anterior"], data["comentario_anterior"])
+                
+                if ["comentario_nuevo"]: 
+                    print(["comentario_nuevo"], data["comentario_nuevo"])
+
+        # SALIR 
         elif opcion == "n":
             print("Saliendo del sistema...")
             break 
 
         else: 
-            print("Opcion inválida")()
+            print("Opcion inválida")
 

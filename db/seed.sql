@@ -1,5 +1,4 @@
 -- Autores -- 
-
 INSERT IN TO autor (id_autor, nombre) VALUES
 (18, william shakespeare),
 (19, Gabriel Garcia Marquez),

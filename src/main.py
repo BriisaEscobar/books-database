@@ -1,3 +1,4 @@
-from interface.cli import menu
+from interface.cli import *
 menu()
+
 

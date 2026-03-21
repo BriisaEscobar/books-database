@@ -1,5 +1,6 @@
 from database.conexion import obtenerConexion 
 from datetime import datetime
+
 # TERMINADO
 def top_libros():
     conexion = obtenerConexion()
@@ -81,26 +82,6 @@ def buscar_libro(unLibro):
     finally:   
         cursor.close()
         conexion.close()
-
-# ----------------------------------------------
-"""
-def agregar_libro(id_libro, titulo, genero, id_autor, paginas):
-
-    conexion = obtenerConexion()
-    cursor = conexion.cursor()
-
-    cursor.execute(
-        INSERT INTO libros (id_libro, titulo, genero, id_autor, paginas)
-        VALUES (%s, %s, %s, %s, %s)
-    , (id_libro, titulo, genero, id_autor,paginas))
-
-    conexion.commit()
-
-    print("Libro agregado correctamente :)")
-
-    cursor.close()
-    conexion.close()
-"""
 
 # ----------------------------------------------
 # TERMINADO
@@ -233,89 +214,8 @@ def estadisticas():
         cursor.close()
         conexion.close()
    
-# ----------------------------------------------
-
-def registrar_Lectura(id_libro, fecha_inicio, fecha_fin, puntuacion, comentario): 
-    conexion = obtenerConexion()
-    cursor = conexion.cursor()
-
-    if not validar_fechas(fecha_inicio, fecha_fin): 
-        return 
-    
-    if not validar_puntuacion(puntuacion):
-        print("Puntuacion inválida [1-5]")
-        return 
-
-    # not validar_comentario(comentario):
-        #print("Comentario inválido")
-        #return 
-    
-    cursor.execute("""
-            INSERT INTO lecturas (id_libro, fecha_inicio, fecha_fin, puntuacion, comentario)
-            VALUES (%s, %s, %s, %s, %s)
-            """, (id_libro, fecha_inicio, fecha_fin, puntuacion, comentario))
-    conexion.commit()
-
-    print("Lectura registrada correctamente :)")
-
-    cursor.close()
-    conexion.close()
-
-# ----------------------------------------------
-"""
-def registrar_Autor(id_autor, nombre):
-    conexion = obtenerConexion()
-    cursor = conexion.cursor()
-
-    cursor.execute(
-            INSERT INTO autor(id_autor, nombre)
-            VALUES (%s, %s)
-        ), (id_autor, nombre)
-    conexion.commit()
-    print("Autor registrado correctamente :)")
-
-    cursor.close()
-    conexion.close()
-""" 
-
 # ---------------------------------------------- 
-
-def validar_fechas(fecha_inicio, fecha_fin):
-    try: 
-        inicio = datetime.strptime(fecha_inicio,"%Y-%m-%d")
-        fin= datetime.strptime(fecha_fin, "%Y-%m-%d")
-
-        if fin < inicio: 
-            print("La fecha de fin no puede ser anterior a la de de inicio")
-            return False
-        return True
-    
-    except ValueError: 
-        print("Formato de fecha inválido (YYYY-MM-DD)")
-        return False 
-
-# ---------------------------------------------- 
-
-def validar_puntuacion(puntuacion): 
-    try: 
-        puntuacion = int(puntuacion)
-        return 1 <= puntuacion <= 5 
-    except: 
-        return False 
-
-# ---------------------------------------------- 
-""" 
-def validar_comentario(comentario): 
-    validos = ["Excelente", "Muy bueno", "Bueno", "Regular" "Malo"]
-    return comentario in validos
-"""
-# ----------------------------------------------   
-
-def validar_estado(estado): 
-    validos = ["Pendiente", "Leyendo", "Terminado", "Abandonado"]
-    return estado in validos 
-
-# ----------------------------------------------   
+# TERMINADO
 
 def terminar_lectura(id_lectura, puntuacion, comentario):
     conexion = obtenerConexion()
@@ -331,29 +231,40 @@ def terminar_lectura(id_lectura, puntuacion, comentario):
         resultado = cursor.fetchone()
 
         if not resultado:
-            print(f"No existe la lectura {id_lectura}")
-            return
-
+            return {
+                "success": False, 
+                "error": "NO_EXISTE_LA_LECTURA"
+            }
+        
         fecha_inicio, estado_actual = resultado
 
         if estado_actual != "leyendo":
-            print(f"No se puede terminar una lectura en estado {estado_actual}")
-            return
+            return {
+                "success": False, 
+                "error": "ERROR_ESTADO"
+            }
+           
 
         if not fecha_inicio:
-            print("No tiene fecha de inicio")
-            return
+            return {
+                "success": False, 
+                "error": "NO_TIENE_FECHA_INICIO"
+            }
         
         if not (1 <= puntuacion <= 5):
             print("Puntuación inválida")
-            return
+            return {
+                "success": False, 
+                "error": "PUNTUACION_INVALIDA"                
+            }
       
-
         fecha_fin = datetime.now().date()
 
         if fecha_fin < fecha_inicio:
-            print("Fechas incoherentes")
-            return
+            return {
+                "success": False, 
+                "error": "FECHAS_INCOHERENTES"
+            }
 
         cursor.execute("""
             UPDATE lecturas
@@ -366,102 +277,26 @@ def terminar_lectura(id_lectura, puntuacion, comentario):
 
         conexion.commit()
 
-        print(f"Lectura finalizada correctamente el {fecha_fin}")
-
-    finally:
-        cursor.close()
-        conexion.close()
-
-# ----------------------------------------------   
-# TERMINADO 
-
-def editar_comentario(id_lectura, nuevo_comentario): 
-    conexion = obtenerConexion()
-    cursor = conexion.cursor()
-
-    try:
-        if not nuevo_comentario or nuevo_comentario.strip() == "":
-            return {
-            "success": False, 
-            "error": "COMENTARIO_INVALIDO"
-            }
-        cursor.execute("""
-            SELECT comentario, estado 
-            FROM lecturas
-            WHERE id_lectura = %s;      
-        """, (id_lectura,))
-    
-        resultado = cursor.fetchone()
-
-        if not resultado:
-            return {
-            "success" : False, 
-            "error"    : "LECTURA_NO_EXISTE"   
-            }
-
-        comentario_anterior, estado_actual = resultado
-
-        if estado_actual != "terminado": 
-            return {
-                "success": False,
-                "error": "LECTURA_NO_TERMINADA"
-            }
-    
-        if comentario_anterior == nuevo_comentario:
-            return {
-            "succes" : False,
-            "error"  : "SIN_CAMBIOS"
-            }
-
-        cursor.execute ("""
-            INSERT INTO historial_comentarios 
-            (id_lectura, comentario_anterior, nuevo_comentario)
-            VALUES (%s, %s, %s)
-            """, (id_lectura, comentario_anterior, nuevo_comentario))
-    
-        cursor.execute(""" 
-            UPDATE lecturas 
-            SET comentario = %s
-            WHERE id_lectura = %s    
-            """, (nuevo_comentario, id_lectura))
-
-        conexion.commit()
-
         return {
-        "success": True, 
-        "data": {
-            "id_lectura": id_lectura,
-            "comentario_anterior": comentario_anterior, 
-            "comentario_nuevo": nuevo_comentario
+            "succes": True, 
+            "data": {
+                "estado": "terminado", 
+                "puntuacion": puntuacion, 
+                "comentario": comentario, 
+                "fecha fin" : fecha_fin, 
+                "id lectura": id_lectura
+            }
         }
-    }
-    
+
     except Exception as e:
-        conexion.rollback()
         return {
-            "success": False, 
-            "error": "ERROR_INTERNO", 
-            "details": str(e)
+            "success": False,
+            "error": "ERROR_INTERNO",
+            "detalle": str(e)
         }
     
     finally:
         cursor.close()
         conexion.close()
 
-# ----------------------------------------------   
-
-        
-
-
     
-
-
-
-
-
-    
-
-
-
-  
-
