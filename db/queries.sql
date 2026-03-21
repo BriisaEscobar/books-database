@@ -9,7 +9,8 @@
     SELECT libros.titulo, autor.nombre, libros.genero
     FROM libros 
     JOIN autor USING (id_autor)
-    WHERE libros.titulo LIKE %s; -- parámetro = titulo del libro
+    WHERE libros.titulo LIKE %s -- parámetro = titulo del libro
+    LIMIT 1;
 
 -- Agregar libro -- 
     INSERT INTO libros (id_libro, titulo, genero, id_autor, paginas)

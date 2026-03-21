@@ -34,7 +34,6 @@ CREATE TABLE lecturas (
     -- validaciones -- 
     CONSTRAINT chk_puntuacion CHECK (puntuacion BETWEEN 1 AND 5),
     CONSTRAINT chk_fechas CHECK (fecha_fin IS NULL Or (fecha_inicio IS NOT NULL AND fecha_fin >= fecha_inicio)),
-    CONSTRAINT chk_comentario CHECK (comentario IN ('Excelente', 'Muy bueno', 'Bueno', 'Regular', 'Malo'))
     CONSTRAINT chk_estado CHECK (estado IN ('Pendiente', 'Leyendo', 'Abandonado', 'Terminado'))
 );
 
